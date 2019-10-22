@@ -1,0 +1,73 @@
+---
+# tasks file for cornerstone:discover-ip-aws.yml
+
+#
+# -----------------------------------------------------------------------------
+# Discover Virtual Machine IP Address
+# -----------------------------------------------------------------------------
+#
+# AWS: In AWS the ec2_instance_facts module provides all DNS & IP address info,
+# both public and private.
+# If targeting the Public Address (the default) the DNS and IP address are available
+# at vm_data.instances[0]public_dns_name and vm_data.instances[0]public_ip_address
+#
+# Similarly if targeting a Private DNS/IP, these are available at
+# vm_data.instances[0]private_dns_name and vm_data.instances[0]private_ip_address
+#
+
+# Discover Public IP Address of VM
+- name: "[Cornerstone - AWS VM] Discover Public DNS/IP Address"
+  vmware_guest_facts_:
+    hostname: "{{ vcenter_hostname }}"
+    username: "{{ vcenter_username }}"
+    password: "{{ vcenter_password }}"
+    validate_certs: no
+    datacenter: "{{ vcenter_datacenter }}"
+    folder: "{{ vcenter_folder }}"
+    name: "{{ vm_name }}"
+  register: vm_data
+  tags: ["{{ cornerstone_platform }}"]
+
+# Set DNS/IP Address as Fact
+- name: "[Cornerstone - AWS VM] Set DNS/IP Address"
+  set_fact:
+      cornerstone_vm_ipaddress: "{{ vm_data.ipv4 }}"
+  tags: ["{{ cornerstone_platform }}"]
+
+- name: "[Cornerstone - VM] Display DNS/IP Address"
+  debug:
+    msg: "Cornerstone VM IP Address: {{ cornerstone_vm_ipaddress }}"
+  when:
+    - vm_data.instances
+
+- name: "[Cornerstone - VM] Register IP with Temporary Host Group"
+  add_host:
+    hostname: "{{ cornerstone_vm_ipaddress }}"
+    groupname: "{{ cornerstone_prefix }}"
+    ansible_ssh_user: "{{ cornerstone_ssh_user }}"
+    ansible_ssh_private_key_file: "{{ cornerstone_ssh_key_path }}"
+    ansible_ssh_extra_args: '-o StrictHostKeyChecking=no'
+  when:
+    - vm_data.instances
+
+- name: "[Cornerstone - VM] Register IP with Temporary Host Group named after the Purpose tag"
+  add_host:
+    hostname: "{{ cornerstone_vm_ipaddress }}"
+    groupname: "{{ cornerstone_tag_purpose }}"
+    ansible_ssh_user: "{{ cornerstone_ssh_user }}"
+    ansible_ssh_private_key_file: "{{ cornerstone_ssh_key_path }}"
+    ansible_ssh_extra_args: "{{ cornerstone_ssh_extra_args }}"
+  when:   
+    - vm_data.instances
+    - cornerstone_tag_purpose != ""
+
+- name: "[Cornerstone - VM] Register IP with Temporary Host Group named after the Role tag"
+  add_host:
+    hostname: "{{ cornerstone_vm_ipaddress }}"
+    groupname: "{{ cornerstone_tag_role }}"
+    ansible_ssh_user: "{{ cornerstone_ssh_user }}" 
+    ansible_ssh_private_key_file: "{{ cornerstone_ssh_key_path }}"
+    ansible_ssh_extra_args: "{{ cornerstone_ssh_extra_args }}"
+  when:
+    - vm_data.instances
+    - cornerstone_tag_role != ""

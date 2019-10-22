@@ -1,0 +1,48 @@
+---
+# tasks file for cornerstone:vm-aws.yml
+
+#
+# -----------------------------------------------------------------------------
+# Virtual Machine Tasks
+# -----------------------------------------------------------------------------
+#
+# AWS utilises AZs that are simply mapped to subnets within a VPC.
+# When creating a VM with Ansible, you need to choose a subnet
+# to deploy the VM into. The AWS UX has a "I don't care which AZ I deploy to"
+# option, which the ec2 module does not have.
+# The upshot here, is that if you parameterise the subnet, you cannot ensure
+# idempotency of ec2_instance when you invoke it. To fix that, I first check
+# if an existing VM exists, and if so grabs the subnet in use and uses that.
+# If one doesn't exist, it simply allocates a random subnet/az.
+#
+
+# Check if we have an existing VM with this name.
+- name: "[Cornerstone - VMWARE] Check for Existing VM"
+  vmware_guest_facts_:
+    hostname: "{{ vcenter_hostname }}"
+    username: "{{ vcenter_username }}"
+    password: "{{ vcenter_password }}"
+    validate_certs: no
+    datacenter: "{{ vcenter_datacenter }}"
+    folder: "{{ vcenter_folder }}"
+    name: "{{ vm_name }}"
+  register: vm_data
+  ignore_errors: true
+
+# Set the existing subnet
+- name: "[Cornerstone - VMWARE] Set Instance_ID of Existing VM"
+  set_fact:
+    instance_id: "{{ vm_data.instances[0].instance_id }}"
+  when: not vm_data.failed
+
+- name: "[Cornerstone - VMWARE] Set instance_id to -99 if no instance, required for removal of instances"
+  set_fact:
+    instance_id: "-99"
+  when: vm_data.failed
+
+# Create the VM (baseline no data disks)
+- name: "[Cornerstone - VMWARE] Create/Delete VM - {{ cornerstone_vm_name }}"
+  vmware_guest:
+    # DO SOME STUFF IN VMWARE_GUEST
+  when: not cornerstone_vm_data_disk
+  register: output_vm_"{{ cornerstone_vm_name }}"
