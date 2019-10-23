@@ -34,17 +34,11 @@
   add_host:
     hostname: "{{ cornerstone_vm_ipaddress }}"
     groupname: "{{ cornerstone_prefix }}"
-    ansible_ssh_user: "{{ cornerstone_ssh_user }}"
-    ansible_ssh_private_key_file: "{{ cornerstone_ssh_key_path }}"
-    ansible_ssh_extra_args: '-o StrictHostKeyChecking=no'
 
 - name: "[Cornerstone - VM] Register IP with Temporary Host Group named after the Purpose tag"
   add_host:
     hostname: "{{ cornerstone_vm_ipaddress }}"
     groupname: "{{ cornerstone_tag_purpose }}"
-    ansible_ssh_user: "{{ cornerstone_ssh_user }}"
-    ansible_ssh_private_key_file: "{{ cornerstone_ssh_key_path }}"
-    ansible_ssh_extra_args: "{{ cornerstone_ssh_extra_args }}"
   when:   
     - cornerstone_tag_purpose != ""
 
@@ -52,8 +46,5 @@
   add_host:
     hostname: "{{ cornerstone_vm_ipaddress }}"
     groupname: "{{ cornerstone_tag_role }}"
-    ansible_ssh_user: "{{ cornerstone_ssh_user }}" 
-    ansible_ssh_private_key_file: "{{ cornerstone_ssh_key_path }}"
-    ansible_ssh_extra_args: "{{ cornerstone_ssh_extra_args }}"
   when:
     - cornerstone_tag_role != ""
