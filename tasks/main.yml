@@ -86,6 +86,7 @@
     cornerstone_vmware_netmask: "{{ item.value.cornerstone_vmware_netmask }}"
     cornerstone_vmware_dns_servers: "{{ item.value.cornerstone_vmware_dns_servers }}"
     cornerstone_vmware_dvswitch_name: "{{ item.value.cornerstone_vmware_dvswitch_name }}"
+    cornerstone_vmware_customization: "{{ item.value.cornerstone_vmware_customization }}"
   with_dict: "{{ guests }}"  
   tags: [vm, "{{ cornerstone_platform }}"]
 
