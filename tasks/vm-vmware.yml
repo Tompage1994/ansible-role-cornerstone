@@ -23,7 +23,7 @@
 # Set the instance ID
 - name: "[Cornerstone - VMWARE] Set Instance_ID (uuid) of Existing VM"
   set_fact:
-    instance_id: "{{ vm_data.instance_uuid }}"
+    instance_id: "{{ vm_data.instance.instance_uuid }}"
   when: not vm_data.failed
 
 - name: "[Cornerstone - VMWARE] Set instance_id to -99 if no instance, required for removal of instances"

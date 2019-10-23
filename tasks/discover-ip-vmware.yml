@@ -23,7 +23,7 @@
 # Set DNS/IP Address as Fact
 - name: "[Cornerstone - VMWARE VM] Set DNS/IP Address"
   set_fact:
-      cornerstone_vm_ipaddress: "{{ vm_data.ipv4 }}"
+      cornerstone_vm_ipaddress: "{{ vm_data.instance.ipv4 }}"
   tags: ["{{ cornerstone_platform }}"]
 
 - name: "[Cornerstone - VM] Display DNS/IP Address"
