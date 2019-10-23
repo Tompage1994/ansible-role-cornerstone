@@ -140,6 +140,7 @@
     cornerstone_vmware_password: "{{ item.value.cornerstone_vmware_password }}"
     cornerstone_vmware_datacenter: "{{ item.value.cornerstone_vmware_datacenter }}"
     cornerstone_vmware_vcsfolder: "{{ item.value.cornerstone_vmware_vcsfolder }}"
+    cornerstone_vmware_instance_guest_id: "{{ item.value.cornerstone_vmware_instance_guest_id }}"
   with_dict: "{{ guests }}"
   tags: ["{{ cornerstone_platform }}"]
 

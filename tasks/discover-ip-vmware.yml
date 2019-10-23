@@ -48,3 +48,10 @@
     groupname: "{{ cornerstone_tag_role }}"
   when:
     - cornerstone_tag_role != ""
+
+- name: "[Cornerstone - VM] Register IP with Temporary Windows host Group when windows box"
+  add_host:
+    hostname: "{{ cornerstone_vm_ipaddress }}"
+    groupname: windows9Server64Guest
+  when:
+    - cornerstone_vmware_instance_guest_id == "windows9Server64Guest"
