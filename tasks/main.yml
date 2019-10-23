@@ -10,6 +10,7 @@
   tags: [common, "{{ cornerstone_platform }}"]
   when:
     - cornerstone_platform != 'libvirt'
+    - cornerstone_platform != 'vmware'
 
 #
 # -----------------------------------------------------------------------------
@@ -20,6 +21,7 @@
   tags: [network, "{{ cornerstone_platform }}"]
   when:
     - cornerstone_platform != 'libvirt'
+    - cornerstone_platform != 'vmware'
 
 #
 # -----------------------------------------------------------------------------
@@ -65,10 +67,24 @@
     cornerstone_vm_libvirt_vmcores: "{{ item.value.cornerstone_vm_libvirt_vmcores }}"
     cornerstone_vm_subnet: "{{ item.value.cornerstone_vm_subnet }}" 
     cornerstone_vm_gateway: "{{ item.value.cornerstone_vm_gateway }}"
-    cornerstone_vm_dns1: "{{ item.value.cornerstone_vm_dns1 }}"
-    cornerstone_vm_dns2: "{{ item.value.cornerstone_vm_dns2 }}"
     cornerstone_vm_ip: "{{ item.value.cornerstone_vm_ip }}"
-
+    cornerstone_vmware_hostname: "{{ item.value.cornerstone_vmware_hostname }}"
+    cornerstone_vmware_username: "{{ item.value.cornerstone_vmware_username }}"
+    cornerstone_vmware_password: "{{ item.value.cornerstone_vmware_password }}"
+    cornerstone_vmware_datacenter: "{{ item.value.cornerstone_vmware_datacenter }}"
+    cornerstone_vmware_cluster: "{{ item.value.cornerstone_vmware_cluster }}"
+    cornerstone_vmware_vmtemplate: "{{ item.value.cornerstone_vmware_vmtemplate }}"
+    cornerstone_vmware_vcsfolder: "{{ item.value.cornerstone_vmware_vcsfolder }}"
+    cornerstone_vmware_datastore: "{{ item.value.cornerstone_vmware_datastore }}"
+    cornerstone_vmware_instance_guest_id: "{{ item.value.cornerstone_vmware_instance_guest_id }}"
+    cornerstone_vmware_memory: "{{ item.value.cornerstone_vmware_memory }}"
+    cornerstone_vmware_cores: "{{ item.value.cornerstone_vmware_cores }}"
+    cornerstone_vmware_scsitype: "{{ item.value.cornerstone_vmware_scsitype }}"
+    cornerstone_vmware_disks: "{{ item.value.cornerstone_vmware_disks }}"
+    cornerstone_vmware_network_name: "{{ item.value.cornerstone_vmware_network_name }}"
+    cornerstone_vmware_netmask: "{{ item.value.cornerstone_vmware_netmask }}"
+    cornerstone_vmware_dns_servers: "{{ item.value.cornerstone_vmware_dns_servers }}"
+    cornerstone_vmware_dvswitch_name: "{{ item.value.cornerstone_vmware_dvswitch_name }}"
   with_dict: "{{ guests }}"  
   tags: [vm, "{{ cornerstone_platform }}"]
 
@@ -116,7 +132,11 @@
     cornerstone_vm_dns1: "{{ item.value.cornerstone_vm_dns1 }}"
     cornerstone_vm_dns2: "{{ item.value.cornerstone_vm_dns2 }}"
     cornerstone_vm_ip: "{{ item.value.cornerstone_vm_ip }}"
-
+    cornerstone_vmware_hostname: "{{ item.value.cornerstone_vmware_hostname }}"
+    cornerstone_vmware_username: "{{ item.value.cornerstone_vmware_username }}"
+    cornerstone_vmware_password: "{{ item.value.cornerstone_vmware_password }}"
+    cornerstone_vmware_datacenter: "{{ item.value.cornerstone_vmware_datacenter }}"
+    cornerstone_vmware_vcsfolder: "{{ item.value.cornerstone_vmware_vcsfolder }}"
   with_dict: "{{ guests }}"
   tags: ["{{ cornerstone_platform }}"]
 

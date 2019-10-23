@@ -1,38 +1,29 @@
 ---
-# tasks file for cornerstone:vm-aws.yml
+# tasks file for cornerstone:vm-vmware.yml
 
 #
 # -----------------------------------------------------------------------------
 # Virtual Machine Tasks
 # -----------------------------------------------------------------------------
 #
-# AWS utilises AZs that are simply mapped to subnets within a VPC.
-# When creating a VM with Ansible, you need to choose a subnet
-# to deploy the VM into. The AWS UX has a "I don't care which AZ I deploy to"
-# option, which the ec2 module does not have.
-# The upshot here, is that if you parameterise the subnet, you cannot ensure
-# idempotency of ec2_instance when you invoke it. To fix that, I first check
-# if an existing VM exists, and if so grabs the subnet in use and uses that.
-# If one doesn't exist, it simply allocates a random subnet/az.
-#
 
 # Check if we have an existing VM with this name.
 - name: "[Cornerstone - VMWARE] Check for Existing VM"
   vmware_guest_facts_:
-    hostname: "{{ vcenter_hostname }}"
-    username: "{{ vcenter_username }}"
-    password: "{{ vcenter_password }}"
+    hostname: "{{ cornerstone_vmware_hostname }}"
+    username: "{{ cornerstone_vmware_username }}"
+    password: "{{ cornerstone_vmware_password }}"
     validate_certs: no
-    datacenter: "{{ vcenter_datacenter }}"
-    folder: "{{ vcenter_folder }}"
-    name: "{{ vm_name }}"
+    datacenter: "{{ cornerstone_vmware_datacenter }}"
+    folder: "{{ cornerstone_vmware_vcsfolder }}"
+    name: "{{ cornerstone_vm_name }}"
   register: vm_data
   ignore_errors: true
 
-# Set the existing subnet
-- name: "[Cornerstone - VMWARE] Set Instance_ID of Existing VM"
+# Set the instance ID
+- name: "[Cornerstone - VMWARE] Set Instance_ID (uuid) of Existing VM"
   set_fact:
-    instance_id: "{{ vm_data.instances[0].instance_id }}"
+    instance_id: "{{ vm_data.instance_uuid }}"
   when: not vm_data.failed
 
 - name: "[Cornerstone - VMWARE] Set instance_id to -99 if no instance, required for removal of instances"
@@ -43,6 +34,31 @@
 # Create the VM (baseline no data disks)
 - name: "[Cornerstone - VMWARE] Create/Delete VM - {{ cornerstone_vm_name }}"
   vmware_guest:
-    # DO SOME STUFF IN VMWARE_GUEST
-  when: not cornerstone_vm_data_disk
+    hostname: "{{ cornerstone_vmware_hostname }}"
+    username: "{{ cornerstone_vmware_username }}"
+    password: "{{ cornerstone_vmware_password }}"
+    datacenter: "{{ cornerstone_vmware_datacenter }}"
+    cluster: "{{ cornerstone_vmware_cluster }}"
+    template: "{{ cornerstone_vmware_vmtemplate }}"
+    folder: "{{ cornerstone_vmware_vcsfolder }}"
+    datastore: "{{ cornerstone_vmware_datastore }}"
+    name: "{{ cornerstone_vm_name }}"
+    guest_id: "{{ cornerstone_vmware_instance_guest_id }}"
+    hardware:
+      memory_mb: "{{ cornerstone_vmware_memory | default(1024) }}"
+      num_cpus: "{{ cornerstone_vmware_cores | default(1) }}"
+      scsi: "{{ cornerstone_vmware_scsitype }}"
+    disk: "{{ cornerstone_vmware_disks }}"
+    networks:
+      - name: "{{ cornerstone_vmware_network_name }}"
+        type: static
+        ip: "{{ cornerstone_vm_ip }}"
+        gateway: "{{ cornerstone_vm_gateway }}"
+        netmask: "{{ cornerstone_vmware_netmask }}"
+        device_type: "vmxnet3"
+        dvswitch_name: "{{ cornerstone_vmware_dvswitch_name }}"
+    customization:
+      dns_servers: "{{ cornerstone_vmware_dns_servers }}"
+    wait_for_ip_address: true
+    state: "{{ cornerstone_vm_state }}"
   register: output_vm_"{{ cornerstone_vm_name }}"
