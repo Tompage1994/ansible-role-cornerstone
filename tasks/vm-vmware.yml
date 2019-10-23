@@ -55,11 +55,11 @@
         type: static
         ip: "{{ cornerstone_vm_ip }}"
         gateway: "{{ cornerstone_vm_gateway }}"
+        dns_servers: "{{ cornerstone_vmware_dns_servers }}"
         netmask: "{{ cornerstone_vmware_netmask }}"
         device_type: "vmxnet3"
         dvswitch_name: "{{ cornerstone_vmware_dvswitch_name }}"
-    customization:
-      dns_servers: "{{ cornerstone_vmware_dns_servers }}"
+    customization: "{{ cornerstone_vmware_customization }}"
     wait_for_ip_address: true
     state: "{{ cornerstone_vm_state }}"
   register: output_vm_"{{ cornerstone_vm_name }}"
