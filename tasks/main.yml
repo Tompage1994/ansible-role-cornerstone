@@ -68,7 +68,7 @@
     cornerstone_vm_subnet: "{{ item.value.cornerstone_vm_subnet }}" 
     cornerstone_vm_gateway: "{{ item.value.cornerstone_vm_gateway }}"
     cornerstone_vm_ip: "{{ item.value.cornerstone_vm_ip }}"
-    cornerstone_vmware_validate_certs: {{ item.value.cornerstone_vmware_validate_certs }}
+    cornerstone_vmware_validate_certs: "{{ item.value.cornerstone_vmware_validate_certs }}"
     cornerstone_vmware_hostname: "{{ item.value.cornerstone_vmware_hostname }}"
     cornerstone_vmware_username: "{{ item.value.cornerstone_vmware_username }}"
     cornerstone_vmware_password: "{{ item.value.cornerstone_vmware_password }}"
