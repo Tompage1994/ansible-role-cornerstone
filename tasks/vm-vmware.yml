@@ -9,7 +9,7 @@
 
 # Check if we have an existing VM with this name.
 - name: "[Cornerstone - VMWARE] Check for Existing VM"
-  vmware_guest_facts_:
+  vmware_guest_facts:
     hostname: "{{ cornerstone_vmware_hostname }}"
     username: "{{ cornerstone_vmware_username }}"
     password: "{{ cornerstone_vmware_password }}"
