@@ -9,11 +9,11 @@
 
 # Discover IP Address of VM
 - name: "[Cornerstone - VMWARE VM] Discover DNS/IP Address"
-  vmware_guest_facts_:
+  vmware_guest_facts:
+    validate_certs: "{{ cornerstone_vmware_validate_certs }}"
     hostname: "{{ cornerstone_vmware_hostname }}"
     username: "{{ cornerstone_vmware_username }}"
     password: "{{ cornerstone_vmware_password }}"
-    validate_certs: no
     datacenter: "{{ cornerstone_vmware_datacenter }}"
     folder: "{{ cornerstone_vmware_vcsfolder }}"
     name: "{{ cornerstone_vm_name }}"
