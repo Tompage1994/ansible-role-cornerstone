@@ -61,5 +61,6 @@
         dvswitch_name: "{{ cornerstone_vmware_dvswitch_name }}"
     customization: "{{ cornerstone_vmware_customization }}"
     wait_for_ip_address: true
+    wait_for_customization: true
     state: "{{ cornerstone_vm_state }}"
   register: output_vm_"{{ cornerstone_vm_name }}"
