@@ -34,11 +34,12 @@
   add_host:
     hostname: "{{ cornerstone_vm_ipaddress }}"
     groupname: "{{ cornerstone_prefix }}"
-
+    instance_name: "{{ cornerstone_vm_name }}"
 - name: "[Cornerstone - VM] Register IP with Temporary Host Group named after the Purpose tag"
   add_host:
     hostname: "{{ cornerstone_vm_ipaddress }}"
     groupname: "{{ cornerstone_tag_purpose }}"
+    instance_name: "{{ cornerstone_vm_name }}"
   when:   
     - cornerstone_tag_purpose != ""
 
@@ -46,6 +47,7 @@
   add_host:
     hostname: "{{ cornerstone_vm_ipaddress }}"
     groupname: "{{ cornerstone_tag_role }}"
+    instance_name: "{{ cornerstone_vm_name }}"
   when:
     - cornerstone_tag_role != ""
 
@@ -53,5 +55,6 @@
   add_host:
     hostname: "{{ cornerstone_vm_ipaddress }}"
     groupname: windows9Server64Guest
+    instance_name: "{{ cornerstone_vm_name }}"
   when:
     - cornerstone_vmware_instance_guest_id == "windows9Server64Guest"
