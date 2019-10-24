@@ -92,4 +92,29 @@ cornerstone_vm_os_disk_size: 20
 cornerstone_vm_data_disk: false
 cornerstone_vm_data_disk_size: 64
 
+# VMware related variables
+cornerstone_vmware_validate_certs: false
+cornerstone_vmware_hostname: vcentre.example.com
+cornerstone_vmware_username: username
+cornerstone_vmware_password: password
+cornerstone_vmware_datacenter: ha-datacenter
+cornerstone_vmware_cluster: cluster
+cornerstone_vmware_vmtemplate: vm-template
+cornerstone_vmware_vcsfolder: path/to/location
+cornerstone_vmware_datastore: datastore
+cornerstone_vmware_instance_guest_id: centos7_64Guest
+cornerstone_vmware_memory: 1024
+cornerstone_vmware_cores: 1
+cornerstone_vmware_scsitype: paravirtual
+cornerstone_vmware_disks:
+  - size_gb: 30
+    type: thin
+cornerstone_vmware_network_name: network-name
+cornerstone_vmware_netmask: 255.255.255.0
+cornerstone_vmware_dns_servers: 
+  - 1.1.1.1
+cornerstone_vmware_dvswitch_name: dvswitch
+cornerstone_vmware_customization:
+  dns_servers: "{{ cornerstone_vmware_dns_servers }}"
+
 # EOF

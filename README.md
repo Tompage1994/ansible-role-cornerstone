@@ -16,7 +16,7 @@ Role Variables
 Available variables are listed below, along with default values (see defaults/main.yml):
 
     # Platform you wish to deploy a Cornerstone VM onto
-    # Currently supports aws, azure, libvirt
+    # Currently supports aws, azure, libvirt, vmware
     cornerstone_platform: aws
 
     # Prefix - What prefix for objects to use. Eg myenv, myapp, etc
@@ -176,18 +176,46 @@ Available variables are listed below, along with default values (see defaults/ma
     cornerstone_public_private_dns1:
     cornerstone_public_private_dns2:
 
+    # VMware relevant variables
+    cornerstone_vmware_validate_certs: false
+    cornerstone_vmware_hostname: vcentre.example.com
+    cornerstone_vmware_username: username
+    cornerstone_vmware_password: password
+    cornerstone_vmware_datacenter: ha-datacenter
+    cornerstone_vmware_cluster: cluster
+    cornerstone_vmware_vmtemplate: vm-template
+    cornerstone_vmware_vcsfolder: path/to/location
+    cornerstone_vmware_datastore: datastore
+    cornerstone_vmware_instance_guest_id: <vmware specific guest os id - see http://pubs.vmware.com/vsphere-6-5/topic/com.vmware.wssdk.apiref.doc/vim.vm.GuestOsDescriptor.GuestOsIdentifier.html
+    cornerstone_vmware_memory: 1024
+    cornerstone_vmware_cores: 1
+    cornerstone_vmware_scsitype: paravirtual
+    cornerstone_vmware_disks:
+      - size_gb: 30
+        type: thin
+    cornerstone_vmware_network_name: network-name
+    cornerstone_vmware_netmask: 255.255.255.0
+    cornerstone_vmware_dns_servers: 
+      - 1.1.1.1
+    cornerstone_vmware_dvswitch_name: dvswitch
+    cornerstone_vmware_customization: <see vmware_guest customization section>
+
 
 Dependencies
 ------------
+
+For a vmware platform, the minimum ansible version is v2.8.
 
 Not a dependency per-se, but used alongside Finial, can subscribe RHEL systems to the Red Hat Network.
 
 For AWS deployments the aws_cli is required. Role for this can be found at https://github.com/kenhitchcock/ansible-role-awscli
 
-Example Playbook
+Another 'non dependency' is the fact vmware provisioning utilises the `vmware_guest` module. See [the documentation](https://docs.ansible.com/ansible/latest/modules/vmware_guest_module.html) for more available options for variables.
+
+Example Playbook - AWS
 ----------------
 
-# For and AWS deployment this will work for multiple instances.
+    # For AWS and VMware deployment this will work for multiple instances.
     - hosts: localhost
       vars:
         cornerstone_sg:
@@ -262,13 +290,49 @@ Example Playbook
       roles:
          - role: danhawker.cornerstone
 
-# For Azure you cannot use the guest layout yet. The task will only create one instance at a time.
+    # For Azure you cannot use the guest layout yet. The task will only create one instance at a time.
+
+Example Playbook - VMware
+---------------
+    - hosts: localhost
+      vars:
+        guests:
+          aws-instance01:
+            cornerstone_platform: "vmware"
+            cornerstone_tag_purpose: demoservice
+            cornerstone_tag_role: logger
+            cornerstone_vm_name: logger01.example.com
+            cornerstone_vm_state: poweredon
+            cornerstone_vm_gateway: 10.0.0.100
+            cornerstone_vm_ip: 10.0.0.101
+            cornerstone_vmware_validate_certs: false
+            cornerstone_vmware_hostname: vcentre.example.com
+            cornerstone_vmware_username: admin
+            cornerstone_vmware_password: admin
+            cornerstone_vmware_datacenter: uk
+            cornerstone_vmware_cluster: az1
+            cornerstone_vmware_vmtemplate: centos_base_template
+            cornerstone_vmware_vcsfolder: test/demoservice
+            cornerstone_vmware_datastore: uk-datastore01
+            cornerstone_vmware_instance_guest_id: centos7_64Guest
+            cornerstone_vmware_memory: 1024
+            cornerstone_vmware_cores: 1
+            cornerstone_vmware_scsitype: paravirtual
+            cornerstone_vmware_disks:
+              - size_gb: 30
+                type: thin
+            cornerstone_vmware_network_name: uknet-test
+            cornerstone_vmware_netmask: 255.255.255.0
+            cornerstone_vmware_dns_servers:
+              - 10.0.0.255
+            cornerstone_vmware_dvswitch_name: uknet-test-dvswitch
+            cornerstone_vmware_customization:
+              dns_servers: "{{ cornerstone_vmware_dns_servers }}"
+      roles:
+         - role: danhawker.cornerstone
 
 Future Releases
 ---------------
-
- - Add support for Libvirt
- - Add support for VSphere
  - Add support for RHEV
  - Add support for OpenStack
 
@@ -282,3 +346,4 @@ Author Information
 
 Dan Hawker [Github](https://github.com/danhawker)
 Ken Hitchcock - Contributor
+Tom Page - Contributor
