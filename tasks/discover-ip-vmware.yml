@@ -32,29 +32,30 @@
 
 - name: "[Cornerstone - VM] Register IP with Temporary Host Group"
   add_host:
-    hostname: "{{ cornerstone_vm_ipaddress }}"
+    hostname: "{{ cornerstone_vm_name }}"
     groupname: "{{ cornerstone_prefix }}"
-    instance_name: "{{ cornerstone_vm_name }}"
+    ansible_host: "{{ cornerstone_vm_ipaddress }}"
+
 - name: "[Cornerstone - VM] Register IP with Temporary Host Group named after the Purpose tag"
   add_host:
-    hostname: "{{ cornerstone_vm_ipaddress }}"
+    hostname: "{{ cornerstone_vm_name }}"
     groupname: "{{ cornerstone_tag_purpose }}"
-    instance_name: "{{ cornerstone_vm_name }}"
+    ansible_host: "{{ cornerstone_vm_ipaddress }}"
   when:   
     - cornerstone_tag_purpose != ""
 
 - name: "[Cornerstone - VM] Register IP with Temporary Host Group named after the Role tag"
   add_host:
-    hostname: "{{ cornerstone_vm_ipaddress }}"
+    hostname: "{{ cornerstone_vm_name }}"
     groupname: "{{ cornerstone_tag_role }}"
-    instance_name: "{{ cornerstone_vm_name }}"
+    ansible_host: "{{ cornerstone_vm_ipaddress }}"
   when:
     - cornerstone_tag_role != ""
 
 - name: "[Cornerstone - VM] Register IP with Temporary Windows host Group when windows box"
   add_host:
-    hostname: "{{ cornerstone_vm_ipaddress }}"
-    groupname: windows9Server64Guest
-    instance_name: "{{ cornerstone_vm_name }}"
+    hostname: "{{ cornerstone_vm_name }}"
+    groupname: windows
+    ansible_host: "{{ cornerstone_vm_ipaddress }}"
   when:
     - cornerstone_vmware_instance_guest_id == "windows9Server64Guest"
