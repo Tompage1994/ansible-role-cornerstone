@@ -26,7 +26,7 @@
     instance_id: "{{ vm_data.instance.instance_uuid }}"
   when: not vm_data.failed
 
-- name: "[Cornerstone - VMWARE] Set instance_id to -99 if no instance, required for removal of instances"
+- name: "[Cornerstone - VMWARE] Set instance_id to -99 if no instance"
   set_fact:
     instance_id: "-99"
   when: vm_data.failed
